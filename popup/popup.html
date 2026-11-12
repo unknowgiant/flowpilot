@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>流程自动化助手</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">▶</span>
+      <span class="title">流程自动化助手</span>
+    </div>
+    <div id="statusBadge" class="status idle">空闲</div>
+  </header>
+
+  <!-- 空闲 / 录制 / 运行 状态区 -->
+  <section id="stateArea" class="state-area">
+    <!-- 空闲 -->
+    <div id="idleArea">
+      <button id="btnRecord" class="btn primary block">● 开始录制新流程</button>
+    </div>
+
+    <!-- 录制中 -->
+    <div id="recordingArea" class="hidden">
+      <div class="rec-tip">正在录制你在页面上的点击和输入…</div>
+      <div class="rec-count">已录制 <b id="recCount">0</b> 个步骤</div>
+      <input id="recName" type="text" placeholder="流程名称" class="text-input">
+      <div class="row">
+        <button id="btnRecSave" class="btn primary grow">完成并保存</button>
+        <button id="btnRecCancel" class="btn danger">取消</button>
+      </div>
+    </div>
+
+    <!-- 运行中 -->
+    <div id="runningArea" class="hidden">
+      <div class="run-name" id="runName">-</div>
+      <div class="run-progress">
+        <div class="run-bar"><div id="runBarFill" class="run-bar-fill"></div></div>
+        <div class="run-steps">第 <span id="runStep">0</span>/<span id="runTotal">0</span> 步 · 重跑 <span id="runRetry">0</span> 次</div>
+      </div>
+      <div id="runLogs" class="run-logs"></div>
+      <button id="btnStop" class="btn danger block">■ 停止执行</button>
+    </div>
+  </section>
+
+  <!-- 流程列表 -->
+  <section id="flowSection">
+    <div class="section-head">
+      <span>我的流程</span>
+      <span id="flowEmpty" class="muted hidden">暂无流程，先录制一个吧</span>
+    </div>
+    <div id="flowList" class="flow-list"></div>
+    <div class="row foot">
+      <button id="btnImport" class="btn small">导入 JSON</button>
+      <button id="btnOptions" class="btn small">打开编辑器</button>
+      <input id="fileImport" type="file" accept=".json" class="hidden">
+    </div>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

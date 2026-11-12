@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>流程编辑器 - 流程自动化助手</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- 左侧：流程列表 -->
+    <aside>
+      <div class="aside-head">
+        <h1>流程列表</h1>
+        <button id="btnNew" class="btn primary small">+ 新建</button>
+      </div>
+      <div id="flowList" class="flow-list"></div>
+      <div class="aside-foot">
+        <button id="btnImportAll" class="btn small block">导入 JSON</button>
+        <input id="fileImportAll" type="file" accept=".json" class="hidden">
+      </div>
+    </aside>
+
+    <!-- 右侧：编辑区 -->
+    <main>
+      <div id="emptyTip" class="empty-tip">
+        <p>从左侧选择一个流程进行编辑</p>
+        <p class="muted">或在插件弹窗中「开始录制」快速生成流程</p>
+      </div>
+
+      <div id="editor" class="hidden">
+        <div class="flow-meta">
+          <div class="field">
+            <label>流程名称</label>
+            <input id="fName" type="text" placeholder="流程名称">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>每步默认反应超时（秒）</label>
+              <input id="fTimeout" type="number" min="3" max="300" value="15">
+            </div>
+            <div class="field">
+              <label>超时后从第一步重跑次数上限</label>
+              <input id="fMaxRetries" type="number" min="0" max="99" value="3">
+            </div>
+          </div>
+        </div>
+
+        <div class="steps-head">
+          <h2>流程步骤</h2>
+          <button id="btnAddStep" class="btn small">+ 添加步骤</button>
+        </div>
+        <p class="hint">每一步执行后会等待「反应」出现；若配置了反应规则，未等到任何反应将<b>终止本轮并从第一步重跑</b>。反应规则里可配置命中后要做的「对应选择」（点击/输入）。</p>
+        <div id="stepList" class="step-list"></div>
+
+        <div class="editor-foot">
+          <button id="btnSave" class="btn primary">保存流程</button>
+          <button id="btnExport" class="btn">导出 JSON</button>
+          <button id="btnDelete" class="btn danger">删除流程</button>
+          <span id="saveTip" class="save-tip hidden">已保存 ✓</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 步骤编辑弹窗 -->
+  <div id="stepModal" class="modal-mask hidden">
+    <div class="modal">
+      <h3 id="modalTitle">编辑步骤</h3>
+
+      <div class="field">
+        <label>步骤类型</label>
+        <select id="sType">
+          <option value="click">点击元素</option>
+          <option value="input">输入内容</option>
+          <option value="wait">等待</option>
+          <option value="navigate">打开网址</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>目标元素选择器（每行一个，按顺序尝试；支持 <code>#id</code>、CSS 选择器、<code>text=按钮文字</code>）</label>
+        <textarea id="sSelectors" rows="3" placeholder="#submit&#10;text=提交&#10;form button[type=submit]"></textarea>
+      </div>
+
+      <div class="field" id="fieldValue">
+        <label>输入内容 / 网址</label>
+        <input id="sValue" type="text">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>本步反应超时（秒，留空用流程默认）</label>
+          <input id="sTimeout" type="number" min="1" max="600">
+        </div>
+        <div class="field">
+          <label>动作后额外等待（毫秒）</label>
+          <input id="sWaitAfter" type="number" min="0" max="60000" value="500">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>步骤描述</label>
+        <input id="sDesc" type="text" placeholder="例如：点击登录按钮">
+      </div>
+
+      <div class="reactions-box">
+        <div class="reactions-head">
+          <label>反应规则（任一命中即通过；无规则则执行完直接下一步）</label>
+          <button id="btnAddReaction" class="btn small">+ 添加反应</button>
+        </div>
+        <div id="reactionList" class="reaction-list"></div>
+      </div>
+
+      <div class="modal-foot">
+        <button id="btnStepOk" class="btn primary">确定</button>
+        <button id="btnStepCancel" class="btn">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>
